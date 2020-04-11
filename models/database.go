@@ -4,6 +4,7 @@ import (
 	"face_ui/utils/setting"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 )
 
