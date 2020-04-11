@@ -9,12 +9,7 @@ import (
 
 var db *gorm.DB
 
-type User struct {
-	gorm.Model
-	Username string
-	Password string
-}
-
+//Setup initialize database face_api and tables: user, record
 func Setup() {
 	var err error
 	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -28,6 +23,18 @@ func Setup() {
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return setting.DatabaseSetting.TablePrefix + defaultTableName
+	}
+
+	if db.HasTable(&User{}) {
+		db.AutoMigrate(&User{})
+	} else {
+		db.CreateTable(&User{})
+	}
+
+	if db.HasTable(&Record{}) {
+		db.AutoMigrate(&Record{})
+	} else {
+		db.CreateTable(&Record{})
 	}
 
 	db.SingularTable(true)
