@@ -13,7 +13,7 @@ var db *gorm.DB
 //Setup initialize database face_api and tables: user, record
 func Setup() {
 	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		setting.DatabaseSetting.User,
 		setting.DatabaseSetting.Password,
 		setting.DatabaseSetting.Host,
@@ -26,6 +26,8 @@ func Setup() {
 		return setting.DatabaseSetting.TablePrefix + defaultTableName
 	}
 
+	db.SingularTable(true)
+	db.LogMode(true)
 	if db.HasTable(&User{}) {
 		db.AutoMigrate(&User{})
 	} else {
@@ -38,7 +40,6 @@ func Setup() {
 		db.CreateTable(&Record{})
 	}
 
-	db.SingularTable(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 }

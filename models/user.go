@@ -2,6 +2,7 @@ package models
 
 import (
 	"crypto/md5"
+	"fmt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -39,7 +40,7 @@ func AddUser(data User) error {
 	p := md5.Sum([]byte(data.Username))
 	user := User{
 		Username:  data.Username,
-		Password:  string(p[:]),
+		Password:  fmt.Sprintf("%x", p),
 		Faceimage: "",
 		Role:      0,
 	}
