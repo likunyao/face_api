@@ -29,14 +29,6 @@ func ExistUserByName(name string) (bool, error) {
 }
 
 func AddUser(data User) error {
-	isRegistered, err := ExistUserByName(data.Username)
-	if err != nil {
-		return err
-	}
-	if isRegistered {
-
-	}
-
 	p := md5.Sum([]byte(data.Username))
 	user := User{
 		Username:  data.Username,
@@ -44,7 +36,7 @@ func AddUser(data User) error {
 		Faceimage: data.Faceimage,
 		Role:      0,
 	}
-	err = db.Create(&user).Error
+	err := db.Create(&user).Error
 
 	return err
 }
