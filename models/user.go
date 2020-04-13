@@ -41,7 +41,7 @@ func AddUser(data User) error {
 	user := User{
 		Username:  data.Username,
 		Password:  fmt.Sprintf("%x", p),
-		Faceimage: "",
+		Faceimage: data.Faceimage,
 		Role:      0,
 	}
 	err = db.Create(&user).Error
