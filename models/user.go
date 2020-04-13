@@ -29,7 +29,7 @@ func ExistUserByName(name string) (bool, error) {
 }
 
 func AddUser(data User) error {
-	p := md5.Sum([]byte(data.Username))
+	p := md5.Sum([]byte(data.Password))
 	user := User{
 		Username:  data.Username,
 		Password:  fmt.Sprintf("%x", p),
@@ -41,16 +41,16 @@ func AddUser(data User) error {
 	return err
 }
 
-func AuthorizedByUsernameAndPassword(data map[string]interface{}) (bool, error) {
+func AuthorizedByUsernameAndPassword(data User) (bool, error) {
 	var user User
-	err := db.Where("username = ?", data["username"].(string)).First(&user).Error
+	err := db.Where("username = ?", data.Username).First(&user).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
 
-	p := md5.Sum([]byte(data["password"].(string)))
-	if string(p[:]) == user.Password {
+	p := md5.Sum([]byte(data.Password))
+	if fmt.Sprintf("%x", p) == user.Password {
 		return true, nil
 	}
 	return false, nil

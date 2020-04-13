@@ -10,7 +10,7 @@ func register(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"error": "Login information is not complete",
+			"error": "Register information is not complete",
 		})
 		return
 	}
