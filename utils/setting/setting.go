@@ -26,6 +26,7 @@ type Application struct {
 	LogSavePath string
 	LogFileExt  string
 	TimeFormat  string
+	JwtSecret   string
 }
 
 var DatabaseSetting = &Database{}

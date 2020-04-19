@@ -2,6 +2,7 @@ package router
 
 import (
 	"face_ui/middleware"
+	"face_ui/router/controller"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +14,7 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/register",register)
 	r.POST("/login", login)
+	r.GET("/records", middleware.Auth(), controller.GetRecords)
 
 	return r
 }
