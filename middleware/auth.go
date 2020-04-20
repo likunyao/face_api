@@ -23,6 +23,7 @@ func Auth() gin.HandlerFunc {
 				"success": false,
 				"err": "token invalid",
 			})
+			c.Abort()
 		}
 		c.Set("username", username)
 	}
