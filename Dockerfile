@@ -14,6 +14,8 @@ RUN go build -o ./face_app ./main.go
 
 FROM alpine:latest
 
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
 RUN mkdir -p /face_api
 WORKDIR /face_api
 COPY --from=builder /face_api/face_app .
