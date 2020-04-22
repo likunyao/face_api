@@ -34,9 +34,9 @@ var ServerSetting = &Server{}
 var ApplicationSetting = &Application{}
 
 func Setup() {
-	cfg, err := ini.Load("config/config.ini")
+	cfg, err := ini.Load("config.ini")
 	if err != nil {
-		log.Fatalf("setting.Setup, fail to parse 'config/config.ini':%v", err)
+		log.Fatalf("setting.Setup, fail to parse 'config.ini':%v", err)
 	}
 	mapTo("database", DatabaseSetting, cfg)
 	mapTo("server", ServerSetting, cfg)
