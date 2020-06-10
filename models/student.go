@@ -6,6 +6,14 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type Student struct {
+	gorm.Model
+	Username string
+	Password string
+	StudentID int
+	
+}
+
 type User struct {
 	gorm.Model
 	Username  string `json:"username" gorm:"unique; not null"`
