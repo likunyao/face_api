@@ -7,21 +7,21 @@ import (
 	"net/http"
 )
 
-func login(c *gin.Context) {
-	var user models.User
+func tea_login(c *gin.Context) {
+	var user models.Teacher
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error": "Login information is not complete",
+			"error":   "Login information is not complete",
 		})
 		return
 	}
 
-	loginSuccess, err := models.AuthorizedByUsernameAndPassword(user)
+	loginSuccess, err := user.AuthorizedByUsernameAndPassword()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"error": "database query error",
+			"error":   "database query error",
 		})
 		return
 	}
@@ -29,7 +29,39 @@ func login(c *gin.Context) {
 		token, _ := jwt.GenerateToken(user.Username)
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"token": token,
+			"token":   token,
+		})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+		})
+	}
+}
+
+func stu_login(c *gin.Context) {
+	var user models.Student
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "Login information is not complete",
+		})
+		return
+	}
+
+	loginSuccess, err := user.AuthorizedByUsernameAndPassword()
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"error":   "database query error",
+		})
+		return
+	}
+	if loginSuccess {
+		token, _ := jwt.GenerateToken(user.Username)
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"token":   token,
 		})
 		return
 	} else {

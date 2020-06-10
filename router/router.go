@@ -12,8 +12,10 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(middleware.Cors())
 
-	r.POST("/register",register)
-	r.POST("/login", login)
+	r.POST("/sturegister", stu_register)
+	r.POST("/tearegister", tea_register)
+	r.POST("/stulogin", stu_login)
+	r.POST("/tealogin", tea_login)
 	r.GET("/records", middleware.Auth(), controller.GetRecords)
 
 	return r

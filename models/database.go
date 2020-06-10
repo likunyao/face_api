@@ -28,10 +28,17 @@ func Setup() {
 
 	db.SingularTable(true)
 	db.LogMode(true)
-	if db.HasTable(&User{}) {
-		db.AutoMigrate(&User{})
+
+	if db.HasTable(&Student{}) {
+		db.AutoMigrate(&Student{})
 	} else {
-		db.CreateTable(&User{})
+		db.CreateTable(&Student{})
+	}
+
+	if db.HasTable(&Teacher{}) {
+		db.AutoMigrate(&Teacher{})
+	} else {
+		db.CreateTable(&Teacher{})
 	}
 
 	if db.HasTable(&Record{}) {

@@ -8,23 +8,24 @@ import (
 
 type Student struct {
 	gorm.Model
-	Username string
-	Password string
-	StudentID int
-	
-}
-
-type User struct {
-	gorm.Model
 	Username  string `json:"username" gorm:"unique; not null"`
 	Password  string `json:"password"`
-	Faceimage string `json:"faceimage" gorm:"not null"`
-	Role      int    `json:"role" gorm:"default:0"`
+	StudentID int    `json:"studentid" gorm:"unique; not null"`
+	TeacherID int    `json:"teacherid" gorm:"unique; not null"`
+	Imgpath   string `json:"imgpath"`
 }
 
-func ExistUserByName(name string) (bool, error) {
-	var user User
-	err := db.Where("username = ?", name).First(&user).Error
+//type User struct {
+//	gorm.Model
+//	Username  string `json:"username" gorm:"unique; not null"`
+//	Password  string `json:"password"`
+//	Faceimage string `json:"faceimage" gorm:"not null"`
+//	Role      int    `json:"role" gorm:"default:0"`
+//}
+
+func (stu *Student) ExistUserByName() (bool, error) {
+	var user Student
+	err := db.Where("username = ?", stu.Username).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
@@ -36,30 +37,41 @@ func ExistUserByName(name string) (bool, error) {
 	return false, nil
 }
 
-func AddUser(data User) error {
-	p := md5.Sum([]byte(data.Password))
-	user := User{
-		Username:  data.Username,
+func (stu *Student) AddUser() error {
+	p := md5.Sum([]byte(stu.Password))
+	user := Student{
+		Username:  stu.Username,
 		Password:  fmt.Sprintf("%x", p),
-		Faceimage: data.Faceimage,
-		Role:      0,
+		StudentID: stu.StudentID,
+		TeacherID: stu.TeacherID,
+		Imgpath:   stu.Imgpath,
 	}
 	err := db.Create(&user).Error
 
 	return err
 }
 
-func AuthorizedByUsernameAndPassword(data User) (bool, error) {
-	var user User
-	err := db.Where("username = ?", data.Username).First(&user).Error
+func (stu *Student) AuthorizedByUsernameAndPassword() (bool, error) {
+	var user Student
+	err := db.Where("username = ?", stu.Username).First(&user).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
 
-	p := md5.Sum([]byte(data.Password))
+	p := md5.Sum([]byte(stu.Password))
 	if fmt.Sprintf("%x", p) == user.Password {
 		return true, nil
 	}
 	return false, nil
+}
+
+func (stu *Student) GetRecords() ([]RecordResult, error) {
+	var res []RecordResult
+	err := db.Table("face_record").Select("created_at, username, remark").Where("username = ?", stu.Username).Scan(&res).Error
+
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return res, nil
 }
